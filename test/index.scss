@@ -1,7 +1,9 @@
-@import "./grid";
+//@import "./grid";
+//@import "./grid";
 @import "./img/_img";
-@import "sass-rem/_rem";
+//@import "sass-rem/_rem";
 
 .foo {
 	colour: red;
+	background-image: relative-url('foobar.png');
 }

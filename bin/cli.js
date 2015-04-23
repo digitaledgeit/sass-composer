@@ -1,6 +1,6 @@
-var fs = require('fs');
-var sass = require('..');
-var program = require('commander');
+var fs        = require('fs');
+var program   = require('commander');
+var composer  = require('..');
 
 program
   .usage('<file> [options]')
@@ -16,11 +16,7 @@ fs.exists(file, function(exists) {
     return console.log('File "'+file+'" not found.');
   }
 
-  var transforms = [
-    require('../lib/transforms/asset-url'),
-    require('../lib/transforms/import-once')
-  ];
-  sass(file, transforms, function(err, result) {
+  composer().compose(file, function(err, result) {
     if (err) return console.log('Error processing file "'+file+'": \n', err.message);
 
     if (program.output) {

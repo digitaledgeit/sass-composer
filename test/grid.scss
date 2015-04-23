@@ -10,24 +10,24 @@
 	width: 100%;
 }
 
-@each $breakpoint, $px in $named_breakpoints {
-	@include named_breakpoint($breakpoint) {
-
-		.#{$breakpoint}-half {
-			width: 50%;
-		}
-
-		.#{$breakpoint}-third {
-			width: 33.33%;
-		}
-
-		.#{$breakpoint}-quarter {
-			width: 25%;
-		}
-
-		.#{$breakpoint}-fith {
-			width: 20%;
-		}
-
-	}
-}
+//@each $breakpoint, $px in $named_breakpoints {
+//	@include named_breakpoint($breakpoint) {
+//
+//		.#{$breakpoint}-half {
+//			width: 50%;
+//		}
+//
+//		.#{$breakpoint}-third {
+//			width: 33.33%;
+//		}
+//
+//		.#{$breakpoint}-quarter {
+//			width: 25%;
+//		}
+//
+//		.#{$breakpoint}-fith {
+//			width: 20%;
+//		}
+//
+//	}
+//}

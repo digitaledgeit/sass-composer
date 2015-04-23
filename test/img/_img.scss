@@ -1,4 +1,5 @@
+//@import "../from-img";
 
 .bg {
-	background-color: asset-url('./test.png');
+	background-color: relative-url('test.png');
 }

@@ -2,7 +2,7 @@
   "name": "sass-composer",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "composer.js",
   "bin": {
     "cli": "./bin/cli.js"
   },
