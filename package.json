@@ -1,0 +1,17 @@
+{
+  "name": "sass-composer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "cli": "./bin/cli.js"
+  },
+  "author": "",
+  "dependencies": {
+    "commander": "^2.8.0",
+    "extend": "^2.0.0",
+    "node-sass": "^3.0.0-beta.5",
+    "resolve": "^1.1.6"
+  },
+  "license": "MIT"
+}

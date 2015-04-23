@@ -1,0 +1,8 @@
+{
+  "name": "npm-sassify-test",
+  "private": true,
+  "dependencies": {
+    "sass-rem": "*",
+    "digitaledgeit-breakpoints": "*"
+  }
+}
