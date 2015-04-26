@@ -1,26 +1,33 @@
 var path          = require('path');
 var extend        = require('extend');
 var sass          = require('node-sass');
+var util          = require('util');
+var EventEmitter  = require('events').EventEmitter;
 
+//the default options
 var defaults = {
   resolvers: [
     require('./lib/resolvers/npm'),
-    require('./lib/resolvers/once'),
+    //require('./lib/resolvers/once'), //FIXME: causing first AND second imports to be empty
     require('./lib/resolvers/file-loader'),
-    require('./lib/resolvers/fn-relative-url'),
+    require('./lib/resolvers/pathname')
   ],
   functions: extend(
-    {}, {}
-    //require('./lib/functions/relative-url')
-  )
+    {}
+  ),
+  plugins: [
+    //require('./lib/plugins/asset-url')()
+  ]
 };
 
 /**
- * Compose SASS files
+ * A stylesheet composer
  * @constructor
  * @param   {Object}            [options]
+ * @param   {string}            [options.entry]
  * @param   {Array.<function>}  [options.resolvers]
- * @param   {Array.<function>}  [options.functions]
+ * @param   {Array.<Object>}    [options.functions]
+ * @param   {Array.<function>}  [options.plugins]
  * @returns {Composer}
  */
 function Composer(options) {
@@ -29,34 +36,102 @@ function Composer(options) {
     return new Composer(options);
   }
 
+  //extend the super class
+  EventEmitter.call(this);
+
+  //merge options with the defaults
   options = extend(defaults, options);
 
   /** @private */
-  this.resolvers = options.resolvers;
+  this._entry = options.entry;
 
   /** @private */
-  this.functions = options.functions;
+  this._resolvers = [];
 
-  for (var name in this.functions) {
-    this.functions[name] = this.functions[name];
+  /** @private */
+  this._functions = {};
+
+  // --- apply the extension points to the composer ---
+
+  for (var i=0; i<options.resolvers.length; ++i) {
+    this.resolver(options.resolvers[i]);
+  }
+  for (var sig in options.functions) {
+     this.function(sig, options.functions[sig]);
+  }
+  for (var i=0; i<options.plugins.length; ++i) {
+    this.use(options.plugins[i]);
   }
 
 }
+util.inherits(Composer, EventEmitter);
 
+Composer.prototype.types = sass.types;
+
+/**
+ * Set the entry file
+ * @param   {string}                    file
+ * @returns {Composer}
+ */
+Composer.prototype.entry = function(file) {
+  this._entry = file;
+  return this;
+};
+
+/**
+ * Add a resolver
+ * @param   {function(Object, function)} resolver The resolver
+ * @returns {Composer}
+ */
+Composer.prototype.resolver = function(resolver) {
+  this._resolvers.push(resolver);
+  return this;
+};
+
+/**
+ * Add a function
+ * @param   {string}    sig   The function signature
+ * @param   {function}  fn    The function body
+ * @returns {Composer}
+ */
+Composer.prototype.function = function(sig, fn) {
+  this._functions[sig] = fn.bind(this);
+  return this;
+};
+
+/**
+ * Use a plugin
+ * @param   {function(Composer)} plugin The plugin
+ * @returns {Composer}
+ */
+Composer.prototype.use = function(plugin) {
+  plugin(this);
+  return this;
+};
+
+/**
+ * Resolve the entry to a file path and or content
+ * @private
+ * @param   {Object}                  entry
+ * @param   {string}                  [entry.file]
+ * @param   {string}                  [entry.contents]
+ * @param   {function(Error, Object)} callback
+ * @returns {Composer}
+ */
 Composer.prototype.resolve = function(entry, callback) {
   var self = this, i = 0;
 
-  function next(err, entrya) {
+  function next(err, entry) {
 
     if (err) {
       return callback(err);
     }
 
-    if (i >= self.resolvers.length) {
-      return callback(null, entrya);
+    if (i >= self._resolvers.length) {
+      return callback(null, entry);
     }
 
-    self.resolvers[i++].call(self, entrya, next);
+    self._resolvers[i++].call(self, entry, next);
 
   }
 
@@ -66,84 +141,57 @@ Composer.prototype.resolve = function(entry, callback) {
 };
 
 /**
- * Compose a SASS file
- * @param   {string}                    file
+ * Compose a SASS file into a stylesheet
  * @param   {function(Error, Object)}   callback
  * @returns {Composer}
  */
-Composer.prototype.compose = function(file, callback) {
-  var self = this, root = path.resolve(file);
-
-  /**
-   * The filename of the root entry file
-   * @protected
-   */
-  this.root = root;
-
-  /**
-   * The filename of the currently imported file being compiled (if any)
-   * @protected
-   */
-  this.current = undefined;
-
-  /**
-   * A list of the filenames imported during comilation
-   *  - node-sass provides a list but we're maintaining our own to remove imported-`once` file names from the list
-   * @protected
-   */
-  this.includedFiles = [];
+Composer.prototype.compose = function(callback) {
+  var self = this, entry = path.resolve(this._entry);
 
   this.resolve(
     {
-      file: root
+      entry:    entry,
+      current:  null,
+      file:     entry
     },
-    function(err, entry) {
+    function(err, context) {
       if (err) return callback(err);
 
-      //update the list of included files
-      self.includedFiles.push(entry.file);
+      //prevent node-sass error with empty contents
+      if (typeof(context.contents) === 'string' && context.contents.length === 0) {
+        return callback(null, context.contents); //node-sass tries to use a file path if we pass in an empty string => "File context created without an input path"
+      }
 
       sass.render(
         {
 
-
-          file:       entry.file,
-          contents:   entry.contents,
+          file:       context.file,
+          data:       context.contents,
 
           context:    self,
-          functions:  self.functions,
+          functions:  self._functions,
 
-          importer:   function(file, prev, done) {
-
-            //update the current file
-            self.current = prev;
+          importer:   function(file, current, done) {
 
             self.resolve(
-              {file: file},
-              function(err, entry) {
+              {
+                entry:    entry,
+                current:  current,
+                file:     file
+              },
+              function(err, context) {
                 if (err) return done(err);
 
-                //update the current file
-                self.current = entry.file;
-
                 //favour contents over files when provided
-                if (typeof(entry.contents) === 'string') {
-
-                  //update the list of included files if it isn't empty
-                  if (entry.contents.length) {
-                    self.includedFiles.push(entry.file);
-                  }
+                if (typeof(context.contents) === 'string') {
 
                   //resume compilation
-                  done({contents: entry.contents});
+                  done({contents: context.contents});//, filename: context.file
 
                 } else {
 
-                  //update the list of included files
-                  self.includedFiles.push(entry.file);
-
                   //resume compilation
-                  done({file: entry.file});
+                  done({file: context.file});
 
                 }
 
@@ -155,11 +203,8 @@ Composer.prototype.compose = function(file, callback) {
         function(err, result) {
           if (err) return callback(err);
 
-          //patch included files
-          result.stats.includedFiles = self.includedFiles;
-
           //call the callback
-          callback(null, result);
+          callback(null, result.css.toString());
 
         }
       );

@@ -1,17 +1,20 @@
 {
   "name": "sass-composer",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "composer.js",
-  "bin": {
-    "cli": "./bin/cli.js"
-  },
-  "author": "",
+  "author": "James Newell <james@digitaledgeit.com.au>",
   "dependencies": {
     "commander": "^2.8.0",
     "extend": "^2.0.0",
     "node-sass": "^3.0.0-beta.5",
     "resolve": "^1.1.6"
+  },
+  "bin": {
+    "sass-composer": "./bin/sass-composer.js"
+  },
+  "scripts": {
+    "sass-composer": "node ./bin/sass-composer.js"
   },
   "license": "MIT"
 }

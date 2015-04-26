@@ -1,0 +1,7 @@
+{
+  "name": "sass-composer-test",
+  "private": "true",
+  "dependencies": {
+    "digitaledgeit-breakpoints": "^0.1.0"
+  }
+}

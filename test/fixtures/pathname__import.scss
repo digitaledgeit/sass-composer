@@ -1,0 +1,8 @@
+
+.dirname--during {
+	content: "#{$__dirname}";
+}
+
+.filename--during {
+	content: "#{$__filename}";
+}

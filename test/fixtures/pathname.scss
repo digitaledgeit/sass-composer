@@ -1,0 +1,18 @@
+
+.dirname--before {
+	content: "#{$__dirname}";
+}
+
+.filename--before {
+	content: "#{$__filename}";
+}
+
+@import "./pathname__import";
+
+.dirname--after {
+	content: "#{$__dirname}";
+}
+
+.filename--after {
+	content: "#{$__filename}";
+}
