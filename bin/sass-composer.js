@@ -19,15 +19,15 @@ fs.exists(file, function(exists) {
   //compose the files into a stylesheet
   composer()
     .entry(file)
-    .compose(function(err, result) {
+    .compose(function(err, css) {
       if (err) return console.log('Error processing file "'+file+'": \n', err.message);
 
       if (program.output) {
-        fs.writeFile(program.output, result.css.toString(), function(err) {
+        fs.writeFile(program.output, css, function(err) {
           console.log('File written to "'+program.output+'".');
         });
       } else {
-        console.log(result.css.toString());
+        console.log(css);
       }
 
     }
