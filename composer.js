@@ -8,7 +8,7 @@ var EventEmitter  = require('events').EventEmitter;
 var defaults = {
   resolvers: [
     require('./lib/resolvers/npm'),
-    //require('./lib/resolvers/once'), //FIXME: causing first AND second imports to be empty
+    //require('./lib/resolvers/once'), //FIXME: causing first AND second imports to be empty https://github.com/sass/node-sass/issues/894
     require('./lib/resolvers/file-loader'),
     require('./lib/resolvers/pathname')
   ],
@@ -16,7 +16,7 @@ var defaults = {
     {}
   ),
   plugins: [
-    //require('./lib/plugins/asset-url')()
+    require('./lib/plugins/asset-url')()
   ]
 };
 
@@ -186,7 +186,7 @@ Composer.prototype.compose = function(callback) {
                 if (typeof(context.contents) === 'string') {
 
                   //resume compilation
-                  done({contents: context.contents});//, filename: context.file
+                  done({contents: context.contents, filename: context.file});
 
                 } else {
 
