@@ -18,6 +18,8 @@ Write some SASS
     
     //you can access a $__dirname and $__filename variable in each imported file
     
+    //you can use asset-url('./img/my-asset.png') in your stylesheets and your asset will be copied into the destination directory
+    
     //now go write some more SASS
 
 Compile using the CLI
@@ -33,15 +35,14 @@ Or compile using the JS API
     var output  = __dirname+'/index.css';
     
     composer()
-      .entry(input)
-      .compose(function(err, css) {
+      .source(input)
+      .destination(output)
+      .compose(function(err) {
         if (err) return console.log(err);
-        fs.writeFile(output, css, function(err) {
-          if (err) return console.log(err);
-    
-          console.log('Composed `index.scss` to CSS and wrote CSS to `index.css`.');
-    
-        });
+        console.log('Composed `index.scss` to CSS and wrote CSS to `index.css`.');
       })
     ;
     
+## TODO
+
+- [watch](https://github.com/paulmillr/chokidar)

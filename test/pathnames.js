@@ -11,7 +11,7 @@ describe('Composer', function() {
       it('path names should point to the entry file before import', function(done) {
 
         composer()
-          .entry(fixture('pathname'))
+          .source(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 
@@ -27,7 +27,7 @@ describe('Composer', function() {
       it('path names should point to the imported file during import', function(done) {
 
         composer()
-          .entry(fixture('pathname'))
+          .source(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 
@@ -43,7 +43,7 @@ describe('Composer', function() {
       it('path names should point to the entry file after import', function(done) {
 
         composer()
-          .entry(fixture('pathname'))
+          .source(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 

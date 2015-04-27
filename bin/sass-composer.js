@@ -20,14 +20,13 @@ fs.exists(file, function(exists) {
 
   //compose the files into a stylesheet
   composer()
-    .entry(file)
+    .source(file)
+    .destination(program.output)
     .compose(function(err, css) {
       if (err) return console.log('Error processing file "'+file+'": \n', err.message);
 
       if (program.output) {
-        fs.writeFile(program.output, css, function(err) {
-          console.log('File written to "'+program.output+'".');
-        });
+        console.log('File written to "'+program.output+'".');
       } else {
         console.log(css);
       }

@@ -9,7 +9,7 @@ describe('Composer', function() {
     it('should receive a param and should return `#112233`', function(done) {
 
       composer()
-        .entry(fixture('functions'))
+        .source(fixture('functions'))
         .function('my-color-calc($color)', function(color) {
 
           assert.equal(color.getR(), 0);

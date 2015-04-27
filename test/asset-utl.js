@@ -4,18 +4,19 @@ var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
 
 describe('Composer', function() {
-  describe('Composer', function() {
-    describe('Context', function () {
+  describe('Plugins', function() {
+    describe('AssetUrl', function () {
 
-      it('should contain the full path', function(done) {
+      it('path should be relative to the destination', function(done) {
 
         composer()
           .source(fixture('import-once'))
-          .resolver(function(context, next) {
-            //assert should be the full path
-          })
           .compose(function(err, css) {
             if (err) return done(err);
+
+            assert.notEqual(css.match(/\.foobar/g), null);
+            assert.equal(css.match(/\.foobar/g).length, 1);
+
             done();
           })
         ;

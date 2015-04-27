@@ -10,7 +10,7 @@ describe('Composer', function() {
       it('should not repeat the imported class', function(done) {
 
         composer()
-          .entry(fixture('import-once'))
+          .source(fixture('import-once'))
           .compose(function(err, css) {
             if (err) return done(err);
 

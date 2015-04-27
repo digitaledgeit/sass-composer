@@ -1,3 +1,4 @@
+var fs            = require('fs');
 var path          = require('path');
 var extend        = require('extend');
 var sass          = require('node-sass');
@@ -24,7 +25,8 @@ var defaults = {
  * A stylesheet composer
  * @constructor
  * @param   {Object}            [options]
- * @param   {string}            [options.entry]
+ * @param   {string}            [options.source]
+ * @param   {string}            [options.destination]
  * @param   {Array.<function>}  [options.resolvers]
  * @param   {Array.<Object>}    [options.functions]
  * @param   {Array.<function>}  [options.plugins]
@@ -43,7 +45,10 @@ function Composer(options) {
   options = extend(defaults, options);
 
   /** @private */
-  this._entry = options.entry;
+  this._source = options.source;
+
+  /** @private */
+  this._destination = options.destination;
 
   /** @private */
   this._resolvers = [];
@@ -69,12 +74,30 @@ util.inherits(Composer, EventEmitter);
 Composer.prototype.types = sass.types;
 
 /**
- * Set the entry file
- * @param   {string}                    file
- * @returns {Composer}
+ * Get/set the path to the SASS source file
+ * @param   {string}  [file]  The path to a SASS file
+ * @returns {string|Composer}
  */
-Composer.prototype.entry = function(file) {
-  this._entry = file;
+Composer.prototype.source = function(file) {
+  if (arguments.length === 0) {
+    return this._source;
+  } else {
+    this._source = file;
+  }
+  return this;
+};
+
+/**
+ * Get/set the path to write the composed output file
+ * @param   {string}  [file]  The path write the composed output
+ * @returns {string|Composer}
+ */
+Composer.prototype.destination = function(file) {
+  if (arguments.length === 0) {
+    return this._destination;
+  } else {
+    this._destination = file;
+  }
   return this;
 };
 
@@ -142,15 +165,26 @@ Composer.prototype.resolve = function(entry, callback) {
 
 /**
  * Compose a SASS file into a stylesheet
+ * @param   {Object}                    options
  * @param   {function(Error, Object)}   callback
  * @returns {Composer}
  */
-Composer.prototype.compose = function(callback) {
-  var self = this, entry = path.resolve(this._entry);
+Composer.prototype.compose = function(options, callback) {
+  var self = this, entry = path.resolve(this._source);
+
+  if (typeof(options) === 'function') {
+    callback  = options;
+    options   = {};
+  }
+
+  //merge options with the defaults
+  options = extend({
+    write: true
+  }, options);
 
   this.resolve(
     {
-      entry:    entry,
+      source:    entry,
       current:  null,
       file:     entry
     },
@@ -175,7 +209,7 @@ Composer.prototype.compose = function(callback) {
 
             self.resolve(
               {
-                entry:    entry,
+                source:    entry,
                 current:  current,
                 file:     file
               },
@@ -203,8 +237,22 @@ Composer.prototype.compose = function(callback) {
         function(err, result) {
           if (err) return callback(err);
 
-          //call the callback
-          callback(null, result.css.toString());
+          var css = result.css.toString();
+
+          if (options.write) {
+
+            //write to disk and then call the callback
+            fs.writeFile(self.destination(), css, function(err) {
+              if (err) return callback(err, null);
+              callback(err, css);
+            });
+
+          } else {
+
+            //call the callback
+            callback(null, css);
+
+          }
 
         }
       );
