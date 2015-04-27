@@ -1,6 +1,6 @@
 # sass-composer
 
-Build your stylesheets as if you're using browserify, using SASS and NPM's resolve method .
+Compose your stylesheets from SASS files using NPM. Just like with Browserify.
 
 ## Installation
 

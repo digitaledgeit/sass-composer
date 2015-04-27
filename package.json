@@ -1,7 +1,7 @@
 {
   "name": "sass-composer",
   "version": "0.2.0",
-  "description": "",
+  "description": "Compose your stylesheets from SASS files using NPM. Just like with Browserify.",
   "main": "composer.js",
   "author": "James Newell <james@digitaledgeit.com.au>",
   "dependencies": {
