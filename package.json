@@ -1,9 +1,10 @@
 {
   "name": "sass-composer",
   "version": "0.2.0",
+  "author": "James Newell <james@digitaledgeit.com.au>",
+  "keywords": ["sass", "libsass", "scss", "style", "npm", "import", "browserify"],
   "description": "Compose your stylesheets from SASS files using NPM. Just like with Browserify.",
   "main": "composer.js",
-  "author": "James Newell <james@digitaledgeit.com.au>",
   "dependencies": {
     "commander": "^2.8.0",
     "debug": "^2.1.3",
@@ -18,6 +19,10 @@
   },
   "scripts": {
     "sass-composer": "node ./bin/sass-composer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/digitaledgeit/sass-composer"
   },
   "license": "MIT"
 }
