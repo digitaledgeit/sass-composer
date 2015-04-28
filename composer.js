@@ -165,7 +165,7 @@ Composer.prototype.resolve = function(entry, callback) {
 
 /**
  * Compose a SASS file into a stylesheet
- * @param   {Object}                    options
+ * @param   {Object}                    [options]
  * @param   {function(Error, Object)}   callback
  * @returns {Composer}
  */
@@ -239,7 +239,7 @@ Composer.prototype.compose = function(options, callback) {
 
           var css = result.css.toString();
 
-          if (options.write) {
+          if (self.destination() && options.write) {
 
             //write to disk and then call the callback
             fs.writeFile(self.destination(), css, function(err) {
