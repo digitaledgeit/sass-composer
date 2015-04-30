@@ -56,6 +56,16 @@ describe('Composer', function() {
 
       });
 
+
+      it('should resolve relative paths', function() {
+
+        var
+          source  = '/Users/james/Work/Projects/pcosync/website/pcosync.com/assets/index.css',
+          current = './styles/pages/home.css'
+        ;
+
+      });
+
     });
   });
 });

@@ -37,7 +37,7 @@ Or compile using the JS API
     composer()
       .source(input)
       .destination(output)
-      .compose(function(err) {
+      .compose(function(err, css) {
         if (err) return console.log(err);
         console.log('Composed `index.scss` to CSS and wrote CSS to `index.css`.');
       })

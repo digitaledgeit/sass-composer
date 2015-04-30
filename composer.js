@@ -62,7 +62,7 @@ function Composer(options) {
     this.resolver(options.resolvers[i]);
   }
   for (var sig in options.functions) {
-     this.function(sig, options.functions[sig]);
+    this.function(sig, options.functions[sig]);
   }
   for (var i=0; i<options.plugins.length; ++i) {
     this.use(options.plugins[i]);
