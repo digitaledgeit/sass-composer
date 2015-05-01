@@ -32,7 +32,7 @@
     "sass-composer": "./bin/sass-composer"
   },
   "scripts": {
-    "test": "JUNIT_REPORT_PATH=$CIRCLE_TEST_REPORTS/mocha/results.xml ./node_modules/.bin/mocha --reporter mocha-jenkins-reporter"
+    "test": "JUNIT_REPORT_PATH=$CIRCLE_TEST_REPORTS/results.xml ./node_modules/.bin/mocha --reporter mocha-jenkins-reporter"
   },
   "repository": {
     "type": "git",
