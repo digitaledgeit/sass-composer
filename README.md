@@ -140,6 +140,7 @@ You can write your own transforms to do whatever you want e.g. inline images usi
 - Composer.watch() API
 - accept node-sass sass formatting options
 - sync and async importers, functions and URL processors
+- write way more tests
 
 ## License
     
