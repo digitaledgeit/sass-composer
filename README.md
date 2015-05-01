@@ -24,7 +24,7 @@ Write some SASS:
 //by default, assets url('./img/my-asset.png') will be copied into the destination directory
 
 //now go write some more SASS...
-@named_breakpoint('xs') {
+@include named_breakpoint('xs') {
   .foo { content: "bar" }
 }
 ```
