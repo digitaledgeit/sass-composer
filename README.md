@@ -1,5 +1,7 @@
 # sass-composer
 
+[![Circle CI](https://circleci.com/gh/digitaledgeit/sass-composer.svg?style=svg)](https://circleci.com/gh/digitaledgeit/sass-composer)
+
 Compose CSS from SASS files using Node's algorithm to resolve `@import`s. Plus even more goodness.
 
 ## Installation
