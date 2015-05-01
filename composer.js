@@ -220,7 +220,7 @@ Composer.prototype.compose = function(options, callback) {
                 if (typeof(context.contents) === 'string') {
 
                   //resume compilation
-                  done({contents: context.contents, filename: context.file});
+                  done({file: context.file, contents: context.contents});
 
                 } else {
 
