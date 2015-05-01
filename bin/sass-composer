@@ -3,6 +3,7 @@
 var fs        = require('fs');
 var path      = require('path');
 var program   = require('commander');
+var chokidar  = require('chokidar');
 
 var Composer  = require('..');
 var metadata  = require('../package.json');
@@ -12,16 +13,11 @@ program
   .description(metadata.description)
   .usage('<file> [options]')
   .option('-o, --output [file]',  'write output to a file')
-  //.option('-w, --watch',   'watch files for changes')
+  .option('-w, --watch',          'watch files for changes')
   .parse(process.argv)
 ;
 
-if (program.args.length) {
-
-  var
-    input   = program.args[0] || '',
-    output  = program.output
-  ;
+function compose(input, output, callback) {
 
   fs.exists(input, function(exists) {
 
@@ -41,21 +37,80 @@ if (program.args.length) {
     //compose CSS from a SASS file
     composer
       .entry(input)
-      .compose(function(err, css) {
-        if (err) return console.error('Error composing file "'+input+'": \n', err.message);
+      .compose(function(err, css, stats) {
+        if (err) return console.error('Error composing file "'+input+'": \n', err.message) || callback(err);
 
         //write to file or display on screen
         if (output) {
           fs.writeFile(output, css, function() {
-            if (err) return console.error('Error writing file "'+input+'": \n', err.message);
+            if (err) return console.error('Error writing file "'+input+'": \n', err.message) || callback(err);
             console.log('Composed "'+path.basename(input)+'" to "'+path.basename(output)+'".');
+            callback(null, stats);
           });
         } else {
           console.log(css);
+          callback(null, stats);
         }
 
+      })
+    ;
+
+  });
+
+}
+
+if (program.args.length) {
+
+  var
+    input   = program.args[0] || '',
+    output  = program.output,
+    watch   = program.watch
+  ;
+
+  compose(input, output, function(err, stats) {
+    if (err) return console.error(err);
+
+    if (watch) {
+
+      var composing = false;
+
+      function stopWatching(err) {
+        watcher.close();
       }
-    );
+
+      var files   = stats.includedFiles;
+      var watcher = chokidar
+        .watch(input, {persistent: true})
+        .add(stats.includedFiles)
+        .on('change', function(path) {
+
+          if (composing) {
+            return;
+          }
+
+          if (output) {
+            console.log('Changed "'+path+'":');
+          }
+
+          composing = true;
+          compose(input, output, function(err, stats) {
+            composing = false;
+            if (err) return stopWatching(err);
+            watcher.unwatch(files);
+            files = stats.includedFiles;
+            watcher.add(files);
+          });
+
+        })
+        .on('error', stopWatching)
+      ;
+
+      process.on('SIGINT', function() {
+        watcher.close();
+        process.exit();
+      });
+
+    }
 
   });
 

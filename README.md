@@ -1,6 +1,6 @@
 # sass-composer
 
-Compose CSS from SASS files using Node's algorithm to resolve `@import`s. And even more goodness.
+Compose CSS from SASS files using Node's algorithm to resolve `@import`s. Plus even more goodness.
 
 ## Installation
 
@@ -10,17 +10,19 @@ Compose CSS from SASS files using Node's algorithm to resolve `@import`s. And ev
 
 Write some SASS:
 
-    //import SASS/SCSS/CSS files from an external NPM module
-    @import "sass-named-breakpoints";
-    
-    //import SASS/SCSS/CSS files from the local NPM module
-    @import "./fonts"
-    
-    //you can access a $__dirname and $__filename variable in each imported file
-    
-    //by default assets url('./img/my-asset.png') will be copied into the destination directory
-    
-    //now go write some more SASS
+```scss
+//import SASS/SCSS/CSS files from an external NPM module
+@import "sass-named-breakpoints";
+
+//import SASS/SCSS/CSS files from the local NPM module
+@import "./fonts"
+
+//you can use the $__dirname and $__filename variables in each imported file
+
+//by default, assets url('./img/my-asset.png') will be copied into the destination directory
+
+//now go write some more SASS
+```
 
 Compose CSS using the CLI:
 
@@ -28,32 +30,35 @@ Compose CSS using the CLI:
 
 Compose CSS using the API:
 
-    var fs = require('fs');
-    var path = require('path');
-    var composer = require('sass-composer');
-    var url = require('sass-composer/lib/plugins/url');
-    
-    var input   = __dirname+'/index.scss';
-    var output  = __dirname+'/build/build.css';
-    
-    composer()
-      .entry(input)
-      .use(url({dir: path.dirname(output)}))
-      .compose(function(err, css) {
-        if (err) return console.error(err);
-        fs.writeFile(output, css, function() {
-          if (err) return console.error('Error writing file "'+input+'": \n', err.message);
-          console.log('Composed "'+path.basename(input)+'" to "'+path.basename(output)+'".');
-        });
-      })
-    ;
-    
+```js
+var fs = require('fs');
+var path = require('path');
+var composer = require('sass-composer');
+var url = require('sass-composer/lib/plugins/url');
+
+var input   = __dirname+'/index.scss';
+var output  = __dirname+'/build/build.css';
+
+composer()
+  .entry(input)
+  .use(url({dir: path.dirname(output), copy: true}))
+  .compose(function(err, css, stats) {
+    if (err) return console.error(err);
+    fs.writeFile(output, css, function() {
+      if (err) return console.error('Error writing file "'+input+'": \n', err.message);
+      console.log('Composed "'+path.basename(input)+'" to "'+path.basename(output)+'".');
+    });
+  })
+;
+```
+
 ## CLI
 
     sass-composer <file> [options]
     
-- <file> - The entry file (SASS/SCSS/CSS) 
+- `<file>` - The entry file (SASS/SCSS/CSS) 
 - `-o` `--output` - The output path (optional)
+- `-w` `--watch` - Watch for changes to the SASS files and re-compose whenever a file is changed (optional)
 
 ## API
 
@@ -72,14 +77,64 @@ Set the path of the entry file
 Compose CSS from SASS
   
 #### .importer(fn)
-#### .function(dfn, fn)
-#### .plugin(fn)
+
+Add an importer. 
+
+An importer function is called for each `@import` statement. They are passed:
+
+- a context object containing :
+    - the `.entry` filename, 
+    - the `.parent` filename, 
+    - the `.file` filename 
+    - and optionally the file `.contents`
+- a `done` callback 
+
+For example: import files from `./bower_components/`
+
+```js
+composer.importer(function(ctx, done) {
+  var bower_path = './bower_components/'+ctx.file;
   
-### Events
+  //if the file already exists then leave it as-is
+  if (fs.existsSync(ctx.file)) {
+    done(null, ctx);
+  }
+    
+  //if the file exists in the bower_components directory then rewrite the filename
+  if (fs.existsSync(bower_path)) {
+    ctx.file = bower_path;
+    done(null, ctx);
+  } 
+
+});
+```
+
+#### .function(dfn, fn)
+
+Add a SASS function,
+
+For example: sum two numbers
+
+```js
+composer.function('sum($a, $b)', function(a, b) {
+  return this.types.Number(a.getValue()*b.getValue());
+});
+```
+
+#### .use(fn)
+
+Use a plugin. Plugins are simple functions and are called on composer instance. 
+  
+##### url(options)
+
+Transforms URLs. The default setting rewrites and copies URLs relative to the entry file e.g. `../img/logo.png` in  `./scss/_brand.scss` imported from `index.scss` gets re-written as `img/logo.png`.
+
+You can write your own transforms to serve different purposes e.g. datauri, cdn, cache busting etc
 
 ## TODO
 
-- [watch](https://github.com/paulmillr/chokidar)
+- Composer.watch()
+- accept node-sass sass formatting options
 - sync and async importers, functions and URL processors
 
 ## License

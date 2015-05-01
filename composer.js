@@ -94,7 +94,7 @@ Composer.prototype.importer = function(importer) {
 };
 
 /**
- * Add a function
+ * Add a SASS function
  * @param   {string}    dfn   The function definition
  * @param   {function}  fn    The function
  * @returns {Composer}
@@ -166,6 +166,8 @@ Composer.prototype.compose = function(options, callback) {
     write: true
   }, options);
 
+  var includedFiles = [];
+
   this.resolve(
     {
       entry:    entry,
@@ -174,6 +176,7 @@ Composer.prototype.compose = function(options, callback) {
     },
     function(err, ctx) {
       if (err) return callback(err);
+      includedFiles.push(ctx.file);
 
       //prevent node-sass error with empty contents
       if (typeof(ctx.contents) === 'string' && ctx.contents.length === 0) {
@@ -198,6 +201,7 @@ Composer.prototype.compose = function(options, callback) {
               },
               function(err, ctx) {
                 if (err) return done(err);
+                includedFiles.push(ctx.file);
 
                 //favour contents over files when provided
                 if (typeof(ctx.contents) === 'string') {
@@ -220,10 +224,14 @@ Composer.prototype.compose = function(options, callback) {
           if (err) return callback(err);
 
           //get the CSS
-          var css = result.css.toString();
+          var
+            css   = result.css.toString(),
+            stats = result.stats
+          ;
+          stats.includedFiles = includedFiles;
 
           //call the callback
-          callback(null, css);
+          callback(null, css, stats);
 
         }
       );
