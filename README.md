@@ -130,7 +130,31 @@ composer.function('sum($a, $b)', function(a, b) {
 
 Use a plugin. Plugins are simple functions and are called on composer instance. 
   
-##### url(options)
+## Importers
+
+### node
+
+Resolve `@import`s according to Node's resolve algorithm. Will resolve SASS, SCSS and CSS files, their dependencies and dependencies of dependencies... you get the point.
+
+### once
+
+Prevent files from being imported multiple times. Waiting on a [node-sass bugfix](https://github.com/sass/node-sass/issues/894)
+
+### fs-loader
+
+Load the file's contents.
+
+### pathname
+
+Prepend and append `$__dirname` and `$__dirname` variables to each file.
+
+## Functions
+
+None as of yet. Go write one!
+  
+## Plugins
+  
+### url
 
 Transform URLs. 
 
@@ -144,6 +168,7 @@ You can write your own transforms to do whatever you want e.g. inline images usi
 - accept node-sass sass formatting options
 - sync and async importers, functions and URL processors
 - write way more tests
+- handling version conflicts?
 
 ## License
     
