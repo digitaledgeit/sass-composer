@@ -1,6 +1,6 @@
 {
   "name": "sass-composer",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": [
     "sass",
@@ -12,7 +12,7 @@
     "watch",
     "browserify"
   ],
-  "description": "Compose CSS from SASS files using Node's algorithm to resolve `@import` statements. Plus even more goodness.",
+  "description": "Compose CSS from SASS files using Node's algorithm to resolve `@import` statements. Plus more goodness.",
   "main": "composer.js",
   "dependencies": {
     "chokidar": "^1.0.1",
