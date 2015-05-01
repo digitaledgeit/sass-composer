@@ -58,7 +58,7 @@ composer()
     
 - `<file>` - The entry file (SASS/SCSS/CSS) 
 - `-o` `--output` - The output path (optional)
-- `-w` `--watch` - Watch for changes to the SASS files and re-compose whenever a file is changed (optional)
+- `-w` `--watch` - Watch for changes to the input files and re-compose whenever a file is changed (optional)
 
 ## API
 
