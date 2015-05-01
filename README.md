@@ -66,21 +66,21 @@ composer()
 
 #### new Composer(options)
 
-Create a new composer
+Create a new composer.
 
 #### .entry(file)
 
-Set the path of the entry file
+Set the path of the entry file.
 
 #### .compose(callback)
 
-Compose CSS from SASS
+Compose CSS from SASS.
   
 #### .importer(fn)
 
 Add an importer. 
 
-An importer function is called for each `@import` statement. They are passed:
+The importer function is called for each `@import` statement. It is passed:
 
 - a context object containing :
     - the `.entry` filename, 
@@ -111,13 +111,13 @@ composer.importer(function(ctx, done) {
 
 #### .function(dfn, fn)
 
-Add a SASS function,
+Add a SASS function.
 
-For example: sum two numbers
+For example: return the sum of two numbers
 
 ```js
 composer.function('sum($a, $b)', function(a, b) {
-  return this.types.Number(a.getValue()*b.getValue());
+  return this.types.Number(a.getValue()+b.getValue());
 });
 ```
 
@@ -129,7 +129,7 @@ Use a plugin. Plugins are simple functions and are called on composer instance.
 
 Transforms URLs. The default setting rewrites and copies URLs relative to the entry file e.g. `../img/logo.png` in  `./scss/_brand.scss` imported from `index.scss` gets re-written as `img/logo.png`.
 
-You can write your own transforms to serve different purposes e.g. datauri, cdn, cache busting etc
+You can write your own transforms to do whatever you want e.g. inline images using datauri, rewrite URLs to a CDN, append a cache busting string etc
 
 ## TODO
 
