@@ -25,13 +25,14 @@
     "resolve": "^1.1.6"
   },
   "devDependencies": {
-    "mocha": "^2.2.4"
+    "mocha": "^2.2.4",
+    "mocha-jenkins-reporter": "^0.1.8"
   },
   "bin": {
     "sass-composer": "./bin/sass-composer"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "JUNIT_REPORT_PATH=$CIRCLE_TEST_REPORTS/mocha/results.xml ./node_modules/.bin/mocha --reporter mocha-jenkins-reporter"
   },
   "repository": {
     "type": "git",
