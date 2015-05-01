@@ -127,13 +127,15 @@ Use a plugin. Plugins are simple functions and are called on composer instance.
   
 ##### url(options)
 
-Transforms URLs. The default setting rewrites and copies URLs relative to the entry file e.g. `../img/logo.png` in  `./scss/_brand.scss` imported from `index.scss` gets re-written as `img/logo.png`.
+Transform URLs. 
+
+The default setting rewrites and copies URLs relative to the entry file e.g. `../img/logo.png` in  `./scss/_brand.scss` imported from `index.scss` gets re-written as `img/logo.png`.
 
 You can write your own transforms to do whatever you want e.g. inline images using datauri, rewrite URLs to a CDN, append a cache busting string etc
 
 ## TODO
 
-- Composer.watch()
+- Composer.watch() API
 - accept node-sass sass formatting options
 - sync and async importers, functions and URL processors
 
