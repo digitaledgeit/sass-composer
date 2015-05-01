@@ -1,0 +1,64 @@
+#!/usr/bin/env node
+
+var fs        = require('fs');
+var path      = require('path');
+var program   = require('commander');
+
+var Composer  = require('..');
+var metadata  = require('../package.json');
+
+program
+  .version(metadata.version)
+  .description(metadata.description)
+  .usage('<file> [options]')
+  .option('-o, --output [file]',  'write output to a file')
+  //.option('-w, --watch',   'watch files for changes')
+  .parse(process.argv)
+;
+
+if (program.args.length) {
+
+  var
+    input   = program.args[0] || '',
+    output  = program.output
+  ;
+
+  fs.exists(input, function(exists) {
+
+    if (!exists) {
+      return console.error('Error reading file "'+input+'": File does not exist.');
+    }
+
+    //create the composer
+    var composer = Composer();
+
+    //configure the URL plugin
+    if (output) {
+      var plugin = require('../lib/plugins/url');
+      composer.use(plugin({dir: path.dirname(output)}));
+    }
+
+    //compose CSS from a SASS file
+    composer
+      .entry(input)
+      .compose(function(err, css) {
+        if (err) return console.error('Error composing file "'+input+'": \n', err.message);
+
+        //write to file or display on screen
+        if (output) {
+          fs.writeFile(output, css, function() {
+            if (err) return console.error('Error writing file "'+input+'": \n', err.message);
+            console.log('Composed "'+path.basename(input)+'" to "'+path.basename(output)+'".');
+          });
+        } else {
+          console.log(css);
+        }
+
+      }
+    );
+
+  });
+
+} else {
+  program.outputHelp();
+}

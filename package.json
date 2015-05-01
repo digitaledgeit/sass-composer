@@ -1,9 +1,9 @@
 {
   "name": "sass-composer",
-  "version": "0.2.2",
+  "version": "1.0.0",
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": ["sass", "libsass", "scss", "style", "npm", "import", "browserify"],
-  "description": "Compose your stylesheets from SASS files using NPM. Just like with Browserify.",
+  "description": "Compose CSS from SASS files using Node's algorithm to resolve `@import`s. And even more goodness.",
   "main": "composer.js",
   "dependencies": {
     "commander": "^2.8.0",
@@ -15,7 +15,7 @@
     "resolve": "^1.1.6"
   },
   "bin": {
-    "sass-composer": "./bin/sass-composer.js"
+    "sass-composer": "./bin/sass-composer"
   },
   "scripts": {
     "sass-composer": "node ./bin/sass-composer.js"

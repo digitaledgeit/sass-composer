@@ -17,7 +17,7 @@ var defaults = {
     {}
   ),
   plugins: [
-    require('./lib/plugins/asset-url')()
+    //require('./lib/plugins/url')()
   ]
 };
 
@@ -26,7 +26,6 @@ var defaults = {
  * @constructor
  * @param   {Object}            [options]
  * @param   {string}            [options.entry]
- * @param   {string}            [options.destination]
  * @param   {Array.<function>}  [options.importers]
  * @param   {Array.<Object>}    [options.functions]
  * @param   {Array.<function>}  [options.plugins]
@@ -45,10 +44,7 @@ function Composer(options) {
   options = extend(defaults, options);
 
   /** @private */
-  this._source = options.entry;
-
-  /** @private */
-  this._destination = options.destination;
+  this._entry = options.entry;
 
   /** @private */
   this._importers = [];
@@ -74,31 +70,17 @@ util.inherits(Composer, EventEmitter);
 Composer.prototype.types = sass.types;
 
 /**
- * Get/set the path to the SASS source file
- * @param   {string}  [file]  The path to a SASS file
+ * Get/set the path of the SASS entry file
+ * @param   {string}  [file]  The path of a SASS file
  * @returns {string|Composer}
  */
-Composer.prototype.source = function(file) {
+Composer.prototype.entry = function(file) {
   if (arguments.length === 0) {
-    return this._source;
+    return this._entry;
   } else {
-    this._source = file;
+    this._entry = file;
+    return this;
   }
-  return this;
-};
-
-/**
- * Get/set the path to write the compiled SASS to a file
- * @param   {string}  [file]  The path write the compiled SASS
- * @returns {string|Composer}
- */
-Composer.prototype.destination = function(file) {
-  if (arguments.length === 0) {
-    return this._destination;
-  } else {
-    this._destination = file;
-  }
-  return this;
 };
 
 /**
@@ -113,12 +95,12 @@ Composer.prototype.importer = function(importer) {
 
 /**
  * Add a function
- * @param   {string}    sig   The function signature
- * @param   {function}  fn    The function body
+ * @param   {string}    dfn   The function definition
+ * @param   {function}  fn    The function
  * @returns {Composer}
  */
-Composer.prototype.function = function(sig, fn) {
-  this._functions[sig] = fn.bind(this);
+Composer.prototype.function = function(dfn, fn) {
+  this._functions[dfn] = fn.bind(this);
   return this;
 };
 
@@ -135,30 +117,32 @@ Composer.prototype.use = function(plugin) {
 /**
  * Resolve the entry to a file path and or content
  * @private
- * @param   {Object}                  entry
- * @param   {string}                  [entry.file]
- * @param   {string}                  [entry.contents]
+ * @param   {Object}                  ctx
+ * @param {string}                    [ctx.entry]       The path of the entry file
+ * @param {string}                    [ctx.parent]      The path of the currently executing file
+ * @param {string}                    [ctx.file]        The path of the file being resolved
+ * @param {string}                    [ctx.contents]    The contents of the file being resolved
  * @param   {function(Error, Object)} callback
  * @returns {Composer}
  */
-Composer.prototype.resolve = function(entry, callback) {
+Composer.prototype.resolve = function(ctx, callback) {
   var self = this, i = 0;
 
-  function next(err, entry) {
+  function next(err, ctx) {
 
     if (err) {
       return callback(err);
     }
 
     if (i >= self._importers.length) {
-      return callback(null, entry);
+      return callback(null, ctx);
     }
 
-    self._importers[i++].call(self, entry, next);
+    self._importers[i++].call(self, ctx, next);
 
   }
 
-  next(null, entry);
+  next(null, ctx);
 
   return this;
 };
@@ -170,7 +154,7 @@ Composer.prototype.resolve = function(entry, callback) {
  * @returns {Composer}
  */
 Composer.prototype.compose = function(options, callback) {
-  var self = this, entry = path.resolve(this._source);
+  var self = this, entry = path.resolve(this._entry);
 
   if (typeof(options) === 'function') {
     callback  = options;
@@ -185,7 +169,7 @@ Composer.prototype.compose = function(options, callback) {
   this.resolve(
     {
       entry:    entry,
-      parent:  null,
+      parent:   null,
       file:     entry
     },
     function(err, ctx) {
@@ -235,22 +219,11 @@ Composer.prototype.compose = function(options, callback) {
         function(err, result) {
           if (err) return callback(err);
 
+          //get the CSS
           var css = result.css.toString();
 
-          if (self.destination() && options.write) {
-
-            //write to disk and then call the callback
-            fs.writeFile(self.destination(), css, function(err) {
-              if (err) return callback(err, null);
-              callback(err, css);
-            });
-
-          } else {
-
-            //call the callback
-            callback(null, css);
-
-          }
+          //call the callback
+          callback(null, css);
 
         }
       );

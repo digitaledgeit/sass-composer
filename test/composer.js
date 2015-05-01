@@ -10,7 +10,7 @@ describe('Composer', function() {
       it('should contain the full path', function(done) {
 
         composer()
-          .source(fixture('import-once'))
+          .entry(fixture('import-once'))
           .importer(function(context, next) {
             next(null, context); //assert should be the full path
           })

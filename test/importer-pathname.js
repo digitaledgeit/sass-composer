@@ -5,13 +5,13 @@ var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
 
 describe('Composer', function() {
-  describe('Resolvers', function() {
-    describe('Pathnames', function() {
+  describe('Importer', function() {
+    describe('Pathname', function() {
 
       it('path names should point to the entry file before import', function(done) {
 
         composer()
-          .source(fixture('pathname'))
+          .entry(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 
@@ -27,7 +27,7 @@ describe('Composer', function() {
       it('path names should point to the imported file during import', function(done) {
 
         composer()
-          .source(fixture('pathname'))
+          .entry(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 
@@ -43,7 +43,7 @@ describe('Composer', function() {
       it('path names should point to the entry file after import', function(done) {
 
         composer()
-          .source(fixture('pathname'))
+          .entry(fixture('pathname'))
           .compose(function(err, css) {
             if (err) return done(err);
 

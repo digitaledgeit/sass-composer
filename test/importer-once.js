@@ -4,15 +4,18 @@ var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
 
 describe('Composer', function() {
-  describe('Plugins', function() {
-    describe('AssetUrl', function () {
+  describe('Importer', function() {
+    describe('Once', function () {
 
-      it('path should be relative to the destination', function(done) {
+      it('should not repeat the imported class', function(done) {
 
         composer()
-          .source(fixture('import-once'))//FIXME
+          .entry(fixture('import-once'))
           .compose(function(err, css) {
             if (err) return done(err);
+
+            assert.notEqual(css.match(/\.foobar/g), null);
+            assert.equal(css.match(/\.foobar/g).length, 1);
 
             done();
           })
