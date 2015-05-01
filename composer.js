@@ -7,11 +7,11 @@ var EventEmitter  = require('events').EventEmitter;
 
 //the default options
 var defaults = {
-  resolvers: [
-    require('./lib/resolvers/npm'),
-    //require('./lib/resolvers/once'), //FIXME: causing first AND second imports to be empty https://github.com/sass/node-sass/issues/894
-    require('./lib/resolvers/file-loader'),
-    require('./lib/resolvers/pathname')
+  importers: [
+    require('./lib/importers/node'),
+    //require('./lib/importers/once'), //FIXME: causing first AND second imports to be empty https://github.com/sass/node-sass/issues/894
+    require('./lib/importers/fs-loader'),
+    require('./lib/importers/pathname')
   ],
   functions: extend(
     {}
@@ -25,9 +25,9 @@ var defaults = {
  * A stylesheet composer
  * @constructor
  * @param   {Object}            [options]
- * @param   {string}            [options.source]
+ * @param   {string}            [options.entry]
  * @param   {string}            [options.destination]
- * @param   {Array.<function>}  [options.resolvers]
+ * @param   {Array.<function>}  [options.importers]
  * @param   {Array.<Object>}    [options.functions]
  * @param   {Array.<function>}  [options.plugins]
  * @returns {Composer}
@@ -45,21 +45,21 @@ function Composer(options) {
   options = extend(defaults, options);
 
   /** @private */
-  this._source = options.source;
+  this._source = options.entry;
 
   /** @private */
   this._destination = options.destination;
 
   /** @private */
-  this._resolvers = [];
+  this._importers = [];
 
   /** @private */
   this._functions = {};
 
   // --- apply the extension points to the composer ---
 
-  for (var i=0; i<options.resolvers.length; ++i) {
-    this.resolver(options.resolvers[i]);
+  for (var i=0; i<options.importers.length; ++i) {
+    this.importer(options.importers[i]);
   }
   for (var sig in options.functions) {
     this.function(sig, options.functions[sig]);
@@ -88,8 +88,8 @@ Composer.prototype.source = function(file) {
 };
 
 /**
- * Get/set the path to write the composed output file
- * @param   {string}  [file]  The path write the composed output
+ * Get/set the path to write the compiled SASS to a file
+ * @param   {string}  [file]  The path write the compiled SASS
  * @returns {string|Composer}
  */
 Composer.prototype.destination = function(file) {
@@ -102,12 +102,12 @@ Composer.prototype.destination = function(file) {
 };
 
 /**
- * Add a resolver
- * @param   {function(Object, function)} resolver The resolver
+ * Add an importer
+ * @param   {function(Object, function)} importer The importer function
  * @returns {Composer}
  */
-Composer.prototype.resolver = function(resolver) {
-  this._resolvers.push(resolver);
+Composer.prototype.importer = function(importer) {
+  this._importers.push(importer);
   return this;
 };
 
@@ -150,11 +150,11 @@ Composer.prototype.resolve = function(entry, callback) {
       return callback(err);
     }
 
-    if (i >= self._resolvers.length) {
+    if (i >= self._importers.length) {
       return callback(null, entry);
     }
 
-    self._resolvers[i++].call(self, entry, next);
+    self._importers[i++].call(self, entry, next);
 
   }
 
@@ -184,49 +184,47 @@ Composer.prototype.compose = function(options, callback) {
 
   this.resolve(
     {
-      source:    entry,
-      current:  null,
+      entry:    entry,
+      parent:  null,
       file:     entry
     },
-    function(err, context) {
+    function(err, ctx) {
       if (err) return callback(err);
 
       //prevent node-sass error with empty contents
-      if (typeof(context.contents) === 'string' && context.contents.length === 0) {
-        return callback(null, context.contents); //node-sass tries to use a file path if we pass in an empty string => "File context created without an input path"
+      if (typeof(ctx.contents) === 'string' && ctx.contents.length === 0) {
+        return callback(null, ctx.contents); //node-sass tries to use a file path if we pass in an empty string => "File context created without an input path"
       }
 
       sass.render(
         {
 
-          file:       context.file,
-          data:       context.contents,
+          file:       ctx.file,
+          data:       ctx.contents,
 
           context:    self,
           functions:  self._functions,
 
-          importer:   function(file, current, done) {
-
+          importer:   function(file, parent, done) {
             self.resolve(
               {
-                source:    entry,
-                current:  current,
+                entry:    entry,
+                parent:   parent,
                 file:     file
               },
-              function(err, context) {
+              function(err, ctx) {
                 if (err) return done(err);
 
                 //favour contents over files when provided
-                if (typeof(context.contents) === 'string') {
-
-                  //resume compilation
-                  done({file: context.file, contents: context.contents});
-
+                if (typeof(ctx.contents) === 'string') {
+                  done({
+                    file:     ctx.file,
+                    contents: ctx.contents
+                  });
                 } else {
-
-                  //resume compilation
-                  done({file: context.file});
-
+                  done({
+                    file:     ctx.file
+                  });
                 }
 
               }

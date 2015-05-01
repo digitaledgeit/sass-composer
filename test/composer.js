@@ -11,7 +11,7 @@ describe('Composer', function() {
 
         composer()
           .source(fixture('import-once'))
-          .resolver(function(context, next) {
+          .importer(function(context, next) {
             next(null, context); //assert should be the full path
           })
           .compose(function(err, css) {
