@@ -7,7 +7,7 @@ describe('Composer', function() {
   describe('Importer', function() {
     describe('Once', function () {
 
-      it('should not repeat the imported class', function(done) {
+      it.skip('should not repeat the imported class', function(done) {
 
         composer()
           .entry(fixture('import-once'))

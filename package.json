@@ -4,11 +4,12 @@
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": [
     "sass",
+    "import",
     "libsass",
     "scss",
     "style",
-    "npm",
-    "import",
+    "node",
+    "watch",
     "browserify"
   ],
   "description": "Compose CSS from SASS files using Node's algorithm to resolve `@import` statements. Plus even more goodness.",
@@ -23,11 +24,14 @@
     "node-sass": "^3.0.0-beta.5",
     "resolve": "^1.1.6"
   },
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  },
   "bin": {
     "sass-composer": "./bin/sass-composer"
   },
   "scripts": {
-    "sass-composer": "node ./bin/sass-composer.js"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
