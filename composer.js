@@ -1,5 +1,7 @@
 var fs            = require('fs');
 var path          = require('path');
+var through       = require('through2');
+var readonly      = require('read-only-stream');
 var extend        = require('extend');
 var sass          = require('node-sass');
 var util          = require('util');
@@ -151,7 +153,7 @@ Composer.prototype.resolve = function(ctx, callback) {
  * Compose a SASS file into a stylesheet
  * @param   {Object}                    [options]
  * @param   {function(Error, Object)}   callback
- * @returns {Composer}
+ * @returns {Stream.Writable}
  */
 Composer.prototype.compose = function(options, callback) {
   var self = this, entry = path.resolve(this._entry);
@@ -167,6 +169,8 @@ Composer.prototype.compose = function(options, callback) {
   }, options);
 
   var includedFiles = [];
+
+  var stream = through();
 
   this.resolve(
     {
@@ -231,7 +235,8 @@ Composer.prototype.compose = function(options, callback) {
           stats.includedFiles = includedFiles;
 
           //call the callback
-          callback(null, css, stats);
+          stream.end(css);
+          if (callback) callback(null, css, stats);
 
         }
       );
@@ -239,7 +244,7 @@ Composer.prototype.compose = function(options, callback) {
     }
   );
 
-  return this;
+  return readonly(stream);
 };
 
 module.exports = Composer;
