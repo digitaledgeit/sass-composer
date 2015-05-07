@@ -225,7 +225,7 @@ Composer.prototype.compose = function(options, callback) {
 
           //get the CSS
           var
-            css   = result.css.toString(),
+            css   = result.css,
             stats = result.stats
           ;
           stats.includedFiles = includedFiles;

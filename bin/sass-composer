@@ -48,7 +48,7 @@ function compose(input, output, callback) {
             callback(null, stats);
           });
         } else {
-          console.log(css);
+          console.log(css.toString());
           callback(null, stats);
         }
 

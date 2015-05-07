@@ -4,8 +4,9 @@ var quoted_rules = [
 ];
 
 module.exports = function(selector, rule, css) {
-
   var regexp, rule_regexp, value_regexp;
+  css = css.toString();
+
   if (quoted_rules.indexOf(rule) === -1) {
     value_regexp = '([^;]*)';
   } else {
