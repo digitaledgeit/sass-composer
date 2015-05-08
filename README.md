@@ -4,6 +4,16 @@
 
 Compose CSS from SASS files using Node's algorithm to resolve `@import`s. Plus more goodness.
 
+####  Why not [component](https://github.com/componentjs/component) or [rework-npm](https://www.npmjs.com/package/rework-npm)?
+
+Because `component` and `rework-npm` don't use SASS, and SASS makes it easy to keep your styles semantic and DRY.
+
+#### Why not [duo](http://duojs.org/), or [sassify](https://www.npmjs.com/package/sassify)?
+
+Because with `duo` and `sassify` your SASS/SCSS/CSS can't use variables, functions, mixins or extend classes defined in one module from another module.
+
+Because with `sassify` you must require your SASS in your JS files. `sass-composer` builds a separate CSS file.
+
 ## Installation
 
     npm install --save sass-composer
@@ -160,6 +170,10 @@ Transform URLs.
 The default setting rewrites and copies URLs relative to the entry file e.g. `../img/logo.png` in  `./scss/_brand.scss` imported from `index.scss` gets re-written as `img/logo.png`.
 
 You can write your own transforms to do whatever you want e.g. inline images using datauri, rewrite URLs to a CDN, append a cache busting string etc
+
+## Known issues
+
+- there is no check for different versions of the same module (in JS conflicts are prevented by wraping the modules in anonymous scopes - which do not exist in CSS)
 
 ## TODO
 
