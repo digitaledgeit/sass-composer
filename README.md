@@ -39,14 +39,13 @@ Compose CSS using the API:
 var fs = require('fs');
 var path = require('path');
 var composer = require('sass-composer');
-var url = require('sass-composer/lib/plugins/url');
 
 var input   = __dirname+'/index.scss';
 var output  = __dirname+'/build/build.css';
 
 composer()
   .entry(input)
-  .use(url({dir: path.dirname(output), copy: true}))
+  .use(composer.plugins.url({dir: path.dirname(output), copy: true}))
   .compose(function(err, css, stats) {
     if (err) return console.error(err);
     fs.writeFile(output, css, function() {
@@ -77,7 +76,7 @@ Create a new composer.
 
 Set the path of the entry file.
 
-#### .compose(callback)
+#### .compose([callback]) : Stream
 
 Compose CSS from SASS.
   

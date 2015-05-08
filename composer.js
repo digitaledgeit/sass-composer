@@ -71,6 +71,9 @@ util.inherits(Composer, EventEmitter);
 
 Composer.prototype.types = sass.types;
 
+Composer.plugins      = {};
+Composer.plugins.url  = require('./lib/plugins/url');
+
 /**
  * Get/set the path of the SASS entry file
  * @param   {string}  [file]  The path of a SASS file
