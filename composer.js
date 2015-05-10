@@ -238,8 +238,10 @@ Composer.prototype.compose = function(options, callback) {
           stats.includedFiles = includedFiles;
 
           //call the callback
-          stream.end(css);
-          if (callback) callback(null, css, stats);
+          process.nextTick(function() {
+            stream.end(css);
+            if (callback) callback(null, css, stats);
+          });
 
         }
       );
