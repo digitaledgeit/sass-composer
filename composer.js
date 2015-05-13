@@ -182,7 +182,10 @@ Composer.prototype.compose = function(options, callback) {
       file:     entry
     },
     function(err, ctx) {
-      if (err) return callback(err);
+      if (err) {
+        if (callback) callback(err);
+        return; //TODO: error on pipe?
+      }
       includedFiles.push(ctx.file);
 
       //prevent node-sass error with empty contents
@@ -228,7 +231,10 @@ Composer.prototype.compose = function(options, callback) {
 
         },
         function(err, result) {
-          if (err) return callback(err);
+          if (err) {
+            if (callback) callback(err);
+            return; //TODO: error on pipe?
+          }
 
           //get the CSS
           var
