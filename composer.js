@@ -164,6 +164,19 @@ Composer.prototype.compose = function(callback) {
 
   var stream = through();
 
+  function end(err, css, stats) {
+    process.nextTick(function () {
+      if (err) {
+        stream.emit('error', err);
+        stream.end(null);
+        if (callback) callback(err, css, stats);
+      } else {
+        stream.end(css);
+        if (callback) callback(err, css, stats);
+      }
+    });
+  }
+
   this.resolve(
     {
       entry:    entry,
@@ -171,7 +184,7 @@ Composer.prototype.compose = function(callback) {
       file:     entry
     },
     function(err, ctx) {
-      if (err) return callback(err);
+      if (err) return end(err);
       includedFiles.push(ctx.file);
 
       //prevent node-sass error with empty contents
@@ -217,18 +230,17 @@ Composer.prototype.compose = function(callback) {
 
         },
         function(err, result) {
-          if (err) return callback(err);
+          if (err) return end(err);
 
           //get the CSS
           var
             css   = result.css,
             stats = result.stats
-          ;
+            ;
           stats.includedFiles = includedFiles;
 
           //call the callback
-          stream.end(css);
-          if (callback) callback(null, css, stats);
+          return end(err, css, stats);
 
         }
       );
