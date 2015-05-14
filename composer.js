@@ -1,4 +1,3 @@
-var fs            = require('fs');
 var path          = require('path');
 var through       = require('through2');
 var readonly      = require('read-only-stream');
@@ -9,6 +8,7 @@ var EventEmitter  = require('events').EventEmitter;
 
 //the default options
 var defaults = {
+  entry: null,
   importers: [
     require('./lib/importers/node'),
     //require('./lib/importers/once'), //FIXME: causing first AND second imports to be empty https://github.com/sass/node-sass/issues/894
@@ -154,22 +154,11 @@ Composer.prototype.resolve = function(ctx, callback) {
 
 /**
  * Compose a SASS file into a stylesheet
- * @param   {Object}                    [options]
  * @param   {function(Error, Object)}   callback
  * @returns {Stream.Writable}
  */
-Composer.prototype.compose = function(options, callback) {
+Composer.prototype.compose = function(callback) {
   var self = this, entry = path.resolve(this._entry);
-
-  if (typeof(options) === 'function') {
-    callback  = options;
-    options   = {};
-  }
-
-  //merge options with the defaults
-  options = extend({
-    write: true
-  }, options);
 
   var includedFiles = [];
 

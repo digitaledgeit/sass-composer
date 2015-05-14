@@ -78,10 +78,10 @@ if (program.args.length) {
         watcher.close();
       }
 
-      var files   = stats.includedFiles;
+      var files   = stats.watchedFiles;
       var watcher = chokidar
         .watch(input, {persistent: true})
-        .add(stats.includedFiles)
+        .add(stats.watchedFiles)
         .on('change', function(path) {
 
           if (composing) {
@@ -97,7 +97,7 @@ if (program.args.length) {
             composing = false;
             if (err) return stopWatching(err);
             watcher.unwatch(files);
-            files = stats.includedFiles;
+            files = stats.watchedFiles;
             watcher.add(files);
           });
 
