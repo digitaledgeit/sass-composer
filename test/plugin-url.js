@@ -8,6 +8,12 @@ describe('Composer', function() {
   describe('Plugin', function() {
     describe('Url', function () {
 
+      it.skip('should strip query string but add it back after copying', function(done) {
+      });
+
+      it.skip('should strip anchor string but add it back after copying', function(done) {
+      });
+
       it.skip('path should be relative to the destination', function(done) {
 
         composer()
