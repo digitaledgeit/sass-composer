@@ -22,6 +22,22 @@ console.log(css.toString());
 
       });
 
+      describe('.transform.relative', function() {
+
+        it('should convert back slashes - even when the filename contained them e.g. windows', function(done) {
+
+          var entry = __dirname+'\\fixtures\\plugin-url.scss';
+          var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
+
+          transform.call({entry: entry}, entry, '.\\img\\logo.png', function(err, rel) {
+            assert.equal(-1, rel.indexOf('\\'));
+            done();
+          });
+
+        });
+
+      });
+
     });
   });
 });
