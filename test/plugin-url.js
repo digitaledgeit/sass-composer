@@ -8,10 +8,34 @@ describe('Composer', function() {
   describe('Plugin', function() {
     describe('Url', function () {
 
-      it.skip('should strip query string but add it back after copying', function(done) {
+      it('should strip query string but add it back after copying', function(done) {
+
+        var uri = './img/logo.png?foo';
+
+        var entry = __dirname+'\\fixtures\\plugin-url.scss';
+        var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
+
+        transform.call({entry: entry}, entry, uri, function(err, rel) {
+          assert.equal(err, null);
+          assert.equal(rel, 'img/logo.png?foo');
+          done();
+        });
+
       });
 
-      it.skip('should strip anchor string but add it back after copying', function(done) {
+      it('should strip anchor string but add it back after copying', function(done) {
+
+        var uri = './img/logo.png#iefix';
+
+        var entry = __dirname+'\\fixtures\\plugin-url.scss';
+        var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
+
+        transform.call({entry: entry}, entry, uri, function(err, rel) {
+          assert.equal(err, null);
+          assert.equal(rel, 'img/logo.png#iefix');
+          done();
+        });
+
       });
 
       it.skip('path should be relative to the destination', function(done) {
@@ -21,7 +45,6 @@ describe('Composer', function() {
           .use(url({dir: '.'}))
           .compose(function(err, css) {
             if (err) return done(err);
-console.log(css.toString());
             done();
           })
         ;
@@ -36,6 +59,7 @@ console.log(css.toString());
           var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
 
           transform.call({entry: entry}, entry, '.\\img\\logo.png', function(err, rel) {
+            assert.equal(err, null);
             assert.equal(-1, rel.indexOf('\\'));
             done();
           });
@@ -47,9 +71,10 @@ console.log(css.toString());
           var uri = 'http://avatars1.githubusercontent.com/u/2237996?v=3&s=96';
 
           var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
+          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
+            assert.equal(err, null);
             assert.equal(0, rel.indexOf('http://avatars1.'));
             done();
           });
@@ -61,9 +86,10 @@ console.log(css.toString());
           var uri = 'https://avatars1.githubusercontent.com/u/2237996?v=3&s=96';
 
           var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
+          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
+            assert.equal(err, null);
             assert.equal(0, rel.indexOf('https://avatars1.'));
             done();
           });
@@ -93,9 +119,10 @@ console.log(css.toString());
           ;
 
           var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
+          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
+            assert.equal(err, null);
             assert.equal(0, rel.indexOf('data:image\\svg+xml;base64,PD94bW'));
             done();
           });
