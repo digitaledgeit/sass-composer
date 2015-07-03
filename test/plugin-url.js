@@ -1,4 +1,5 @@
 var assert    = require('assert');
+var path      = require('path');
 var rule      = require('./lib/get-rule');
 var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
@@ -7,36 +8,6 @@ var url       = require('../lib/plugins/url');
 describe('Composer', function() {
   describe('Plugin', function() {
     describe('Url', function () {
-
-      it('should strip query string but add it back after copying', function(done) {
-
-        var uri = './img/logo.png?foo';
-
-        var entry = __dirname+'\\fixtures\\plugin-url.scss';
-        var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
-
-        transform.call({entry: entry}, entry, uri, function(err, rel) {
-          assert.equal(err, null);
-          assert.equal(rel, 'img/logo.png?foo');
-          done();
-        });
-
-      });
-
-      it('should strip anchor string but add it back after copying', function(done) {
-
-        var uri = './img/logo.png#iefix';
-
-        var entry = __dirname+'\\fixtures\\plugin-url.scss';
-        var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
-
-        transform.call({entry: entry}, entry, uri, function(err, rel) {
-          assert.equal(err, null);
-          assert.equal(rel, 'img/logo.png#iefix');
-          done();
-        });
-
-      });
 
       it.skip('path should be relative to the destination', function(done) {
 
@@ -51,12 +22,12 @@ describe('Composer', function() {
 
       });
 
-      describe('.transform.relative', function() {
+      describe('.transforms.relative()', function() {
 
         it('should not contain back slashes when I use a Windows path', function(done) {
 
-          var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures', copy: false});
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
 
           transform.call({entry: entry}, entry, '.\\img\\logo.png', function(err, rel) {
             assert.equal(err, null);
@@ -70,8 +41,8 @@ describe('Composer', function() {
 
           var uri = 'http://avatars1.githubusercontent.com/u/2237996?v=3&s=96';
 
-          var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
             assert.equal(err, null);
@@ -85,8 +56,8 @@ describe('Composer', function() {
 
           var uri = 'https://avatars1.githubusercontent.com/u/2237996?v=3&s=96';
 
-          var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
             assert.equal(err, null);
@@ -118,12 +89,42 @@ describe('Composer', function() {
             'Pg=='
           ;
 
-          var entry = __dirname+'\\fixtures\\plugin-url.scss';
-          var transform = url.transforms.relative({dir: __dirname+'\\fixtures'});
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
 
           transform.call({entry: entry}, entry, uri, function(err, rel) {
             assert.equal(err, null);
             assert.equal(0, rel.indexOf('data:image\\svg+xml;base64,PD94bW'));
+            done();
+          });
+
+        });
+
+        it('should remove the query string for file operations', function(done) {
+
+          var uri = './img/logo.png?foo';
+
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
+
+          transform.call({entry: entry}, entry, uri, function(err, rel) {
+            assert.equal(err, null);
+            assert.equal(rel, 'img/logo.png?foo');
+            done();
+          });
+
+        });
+
+        it('should remove the anchor string for file operations', function(done) {
+
+          var uri = './img/logo.png#iefix';
+
+          var entry = path.join(__dirname, 'fixtures', 'plugin-url.scss');
+          var transform = url.transforms.relative({dir: path.join(__dirname, 'fixtures')});
+
+          transform.call({entry: entry}, entry, uri, function(err, rel) {
+            assert.equal(err, null);
+            assert.equal(rel, 'img/logo.png#iefix');
             done();
           });
 
