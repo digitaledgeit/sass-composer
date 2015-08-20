@@ -4,12 +4,15 @@
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": [
     "sass",
+    "composer",
     "import",
     "libsass",
     "scss",
     "style",
     "node",
     "watch",
+    "npm",
+    "require",
     "browserify"
   ],
   "description": "Compose CSS from SASS files using Node's algorithm to resolve `@import` statements. Plus more goodness.",
