@@ -24,7 +24,8 @@ Write some SASS:
 
 ```scss
 //import SASS/SCSS/CSS files from an external NPM module
-@import "sass-named-breakpoints";
+@import "normalize";
+@import "sass-breakpoints";
 
 //import SASS/SCSS/CSS files from the local NPM module
 @import "./fonts"
@@ -34,7 +35,7 @@ Write some SASS:
 //by default, assets url('./img/my-asset.png') will be copied into the destination directory
 
 //now go write some more SASS...
-@include named_breakpoint('xs') {
+@include breakpoint('xs') {
   .foo { content: "bar" }
 }
 ```
