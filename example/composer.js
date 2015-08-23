@@ -9,6 +9,9 @@ composer()
   .entry(input)
   .use(composer.plugins.url({dir: path.dirname(output), copy: true}))
   .compose()
+    .on('error', function(err) {
+      console.error('Error rendering SASS file "'+output+'": \n', err.message);
+    })
     .pipe(fs.createWriteStream(output)) //will fail if the output directory isn't created in time by the URL plugin (if at all)
     .on('error', function(err) {
       console.error('Error writing file "'+output+'": \n', err.message);
