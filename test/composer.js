@@ -5,6 +5,66 @@ var composer = require('..');
 describe('Composer', function() {
   describe('Composer', function() {
 
+    describe('new Composer()', function() {
+    });
+
+    describe('.resolve()', function() {
+
+      var ctx = {
+        entry:    'a',
+        parent:   'b',
+        file:     'c',
+        contents: 'd'
+      };
+
+      it('should call the callback with a context when there are no importers', function(done) {
+
+        composer({importers: []}).resolve(ctx, function(err, ret) {
+          assert.equal(err, null);
+          assert.deepEqual(ret, ctx);
+          done();
+        });
+
+      });
+
+      it('should call the callback with a context when an importer is successful', function(done) {
+        var called = false;
+
+        function importer(ret, next) {
+          called = true;
+          assert.equal(ret, ctx);
+          assert.equal(typeof(next), 'function');
+          next(null, ctx);
+        }
+
+        composer({importers: [importer]}).resolve(ctx, function(err, ret) {
+          assert(called);
+          assert.equal(err, null);
+          assert.equal(ret, ctx);
+          done();
+        });
+
+      });
+
+      it('should call the callback with an error when an importer encounters an error', function(done) {
+        var called = false;
+
+        function importer(ret, next) {
+          called = true;
+          next(new Error(), null);
+        }
+
+        composer({importers: [importer]}).resolve(ctx, function(err, ret) {
+          assert(called);
+          assert.notEqual(err, null);
+          assert.equal(ret, null);
+          done();
+        });
+
+      });
+
+    });
+
     describe('.compose()', function() {
 
       it('should only call the callback once', function(done) {

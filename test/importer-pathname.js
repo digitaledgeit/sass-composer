@@ -3,6 +3,7 @@ var assert    = require('assert');
 var rule      = require('./lib/get-rule');
 var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
+var importer  = require('../lib/importers/pathname');
 
 /**
  * Escape a string for display in CSS
@@ -17,62 +18,67 @@ describe('Composer', function() {
   describe('Importer', function() {
     describe('Pathname', function() {
 
-      it('path names should point to the entry file before import', function(done) {
-
-        composer()
-          .entry(fixture('pathname'))
-          .compose(function(err, css) {
-            if (err) return done(err);
-
-            assert.equal(rule('.dirname--before', 'content', css), esc(path.dirname(fixture('pathname'))));
-            assert.equal(rule('.filename--before', 'content', css), esc(fixture('pathname')));
-
+      it('should return an error when the file content has not been loaded', function(done) {
+        importer(
+          {},
+          function(err, ctx) {
+            assert.notEqual(err, null);
+            assert.equal(ctx, null);
             done();
-          })
-        ;
-
+          }
+        );
       });
 
-      it('path names should point to the imported file during import', function(done) {
-
-        composer()
-          .entry(fixture('pathname'))
-          .compose(function(err, css) {
-            if (err) return done(err);
-
-            assert.equal(rule('.dirname--during', 'content', css), esc(path.dirname(fixture('pathname__import'))));
-            assert.equal(rule('.filename--during', 'content', css), esc(fixture('pathname__import')));
-
+      it('should embed paths for a 1st level file', function(done) {
+        importer(
+          {
+            entry:    '/home/james/prj/index.scss',
+            parent:   null,
+            file:     '/home/james/prj/index.scss',
+            contents: ''
+          },
+          function(err, ctx) {
+            assert.equal(err, null);
+            assert(/\$__dirname:\s+"\/home\/james\/prj"/.test(ctx.contents));
+            assert(/\$__filename:\s+"\/home\/james\/prj\/index.scss"/.test(ctx.contents));
             done();
-          })
-        ;
-
+          }
+        );
       });
 
-      it('path names should point to the entry file after import', function(done) {
-
-        composer()
-          .entry(fixture('pathname'))
-          .compose(function(err, css) {
-            if (err) return done(err);
-
-            assert.equal(rule('.dirname--after', 'content', css), esc(path.dirname(fixture('pathname'))));
-            assert.equal(rule('.filename--after', 'content', css), esc(fixture('pathname')));
-
+      //TODO: check relative paths
+      it('should embed paths for a 2nd level file', function(done) {
+        importer(
+          {
+            entry:    '/home/james/prj/index.scss',
+            parent:   '/home/james/prj/index.scss',
+            file:     '/home/james/prj/lib/typography.scss',
+            contents: ''
+          },
+          function(err, ctx) {
+            assert.equal(err, null);
+            assert(/\$__dirname:\s+"\/home\/james\/prj\/lib"/.test(ctx.contents));
+            assert(/\$__filename:\s+"\/home\/james\/prj\/lib\/typography.scss"/.test(ctx.contents));
             done();
-          })
-        ;
-
+          }
+        );
       });
 
-
-      it.skip('should resolve relative paths', function() {
-
-        var
-          source  = '/Users/james/Work/Projects/pcosync/website/pcosync.com/assets/index.css',
-          current = './styles/pages/home.css'
-        ;
-
+      it('should embed paths for a 3rd level file', function(done) {
+        importer(
+          {
+            entry:    '/home/james/prj/index.scss',
+            parent:   '/home/james/prj/lib/typography.scss',
+            file:     '/home/james/prj/lib/fonts.scss',
+            contents: ''
+          },
+          function(err, ctx) {
+            assert.equal(err, null);
+            assert(/\$__dirname:\s+"\/home\/james\/prj\/lib"/.test(ctx.contents));
+            assert(/\$__filename:\s+"\/home\/james\/prj\/lib\/fonts.scss"/.test(ctx.contents));
+            done();
+          }
+        );
       });
 
     });
