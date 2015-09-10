@@ -1,9 +1,5 @@
-var path      = require('path');
 var assert    = require('assert');
-var rule      = require('./lib/get-rule');
-var fixture   = require('./lib/get-fixture');
-var composer  = require('..');
-var importer  = require('../lib/importers/pathname');
+var importer  = require('../../lib/importers/pathname');
 
 /**
  * Escape a string for display in CSS
@@ -14,9 +10,9 @@ function esc(str) {
   return str.replace(/([\[\]\\])/g, '\\$1');
 }
 
-describe('Composer', function() {
-  describe('Importer', function() {
-    describe('Pathname', function() {
+describe('sass-composer', function() {
+  describe('importer', function() {
+    describe('pathname', function() {
 
       it('should return an error when the file content has not been loaded', function(done) {
         importer(

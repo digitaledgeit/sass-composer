@@ -3,8 +3,8 @@ var rule      = require('./lib/get-rule');
 var fixture   = require('./lib/get-fixture');
 var composer  = require('..');
 
-describe('Composer', function() {
-  describe('Functions', function () {
+describe('sass-composer', function() {
+  describe('functions', function () {
 
     it('should receive a param and should return `#112233`', function(done) {
 

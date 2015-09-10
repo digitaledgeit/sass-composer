@@ -1,13 +1,12 @@
 var assert    = require('assert');
 var path      = require('path');
-var rule      = require('./lib/get-rule');
-var fixture   = require('./lib/get-fixture');
-var composer  = require('..');
-var url       = require('../lib/plugins/url');
+var fixture   = require('./../lib/get-fixture');
+var composer  = require('../..');
+var url       = require('../../lib/plugins/url');
 
-describe('Composer', function() {
-  describe('Plugin', function() {
-    describe('Url', function () {
+describe('sass-composer', function() {
+  describe('plugin', function() {
+    describe('url', function () {
 
       it.skip('path should be relative to the destination', function(done) {
 

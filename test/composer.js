@@ -2,7 +2,7 @@ var assert = require('assert');
 var fixture = require('./lib/get-fixture');
 var composer = require('..');
 
-describe('Composer', function() {
+describe('sass-composer', function() {
   describe('Composer', function() {
 
     describe('new Composer()', function() {

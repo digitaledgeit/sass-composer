@@ -1,8 +1,6 @@
 # sass-composer
 
-[![Circle CI](https://circleci.com/gh/digitaledgeit/sass-composer.svg?style=svg)](https://circleci.com/gh/digitaledgeit/sass-composer)
-
-[![Coverage Status](https://coveralls.io/repos/digitaledgeit/sass-composer/badge.svg?branch=master&service=github)](https://coveralls.io/github/digitaledgeit/sass-composer?branch=master)
+[![Circle CI](https://circleci.com/gh/digitaledgeit/sass-composer.svg?style=svg)](https://circleci.com/gh/digitaledgeit/sass-composer) [![Coverage Status](https://coveralls.io/repos/digitaledgeit/sass-composer/badge.svg?branch=master&service=github)](https://coveralls.io/github/digitaledgeit/sass-composer?branch=master)
 
 Compose CSS from SASS files using Node's algorithm to resolve `@import`s. Plus more goodness.
 
