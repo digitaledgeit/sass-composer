@@ -5,10 +5,6 @@ describe('sass-composer', function() {
   describe('importer', function() {
     describe('node', function () {
 
-      it('', function(done) {
-        importer();
-      });
-
     });
   });
 });
