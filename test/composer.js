@@ -117,5 +117,7 @@ describe('sass-composer', function() {
 
     });
 
+    it('ctx.parent should be the fully resolved path to the parent file')
+
   });
 });
