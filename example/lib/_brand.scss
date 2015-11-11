@@ -1,3 +1,5 @@
 .logo {
   background-image: url('../img/logo.png');
+  background-image: url('../img/logo.png?foo');
+  background-image: url('../img/logo.png#bar');
 }
