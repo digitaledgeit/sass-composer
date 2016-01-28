@@ -1,6 +1,6 @@
 {
   "name": "sass-composer",
-  "version": "2.0.0-beta12",
+  "version": "2.0.0-beta13",
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": [
     "sass",
@@ -25,7 +25,7 @@
     "extend": "^3.0.0",
     "fs-extra": "^0.26.2",
     "mkdirp": "^0.5.0",
-    "node-sass": "~3.3.3",
+    "node-sass": "^3.4.2",
     "read-only-stream": "^2.0.0",
     "resolve": "^1.1.6",
     "through2": "^2.0.0"
@@ -39,7 +39,7 @@
   },
   "scripts": {
     "test": "JUNIT_REPORT_PATH=$CIRCLE_TEST_REPORTS/results.xml mocha test/**/*.js --reporter mocha-jenkins-reporter",
-    "test-dev": "mocha test/**/*.js"
+    "test.local": "mocha test/**/*.js"
   },
   "repository": {
     "type": "git",

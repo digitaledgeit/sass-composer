@@ -42,6 +42,7 @@ function compose(input, output, callback) {
 
         //write to file or display on screen
         if (output) {
+          //TODO: create the directory
           fs.writeFile(output, css, function() {
             if (err) return console.error('Error writing file "'+input+'": \n', err.message) || callback(err);
             console.log('Composed "'+path.basename(input)+'" to "'+path.basename(output)+'".');
