@@ -1,6 +1,6 @@
 {
   "name": "sass-composer",
-  "version": "2.0.0-beta13",
+  "version": "2.0.0-beta14",
   "author": "James Newell <james@digitaledgeit.com.au>",
   "keywords": [
     "sass",
@@ -32,7 +32,8 @@
   },
   "devDependencies": {
     "mocha": "^2.2.4",
-    "mocha-jenkins-reporter": "^0.1.8"
+    "mocha-jenkins-reporter": "^0.1.8",
+    "sinon": "^1.17.3"
   },
   "bin": {
     "sass-composer": "./bin/sass-composer"
